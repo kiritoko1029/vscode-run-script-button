@@ -6,9 +6,10 @@ export async function showScripts() {
 
     if (wok) {
         const packageJsonPath = (`${wok}/package.json`);
-        const checkPkgManager = existsSync(`${wok}/package-lock.json`);
-        const useNpm = checkPkgManager ? true : false;
-        const runCommand = useNpm ? 'npm' : 'yarn';
+        const isNpm = existsSync(`${wok}/package-lock.json`);
+        const isYarn = existsSync(`${wok}/yarn.lock`);
+        const isPnpm = existsSync(`${wok}/pnpm-lock.yaml`);
+        const runCommand = isPnpm ? 'pnpm' : isYarn ? 'yarn' : isNpm ? 'npm' : 'bun';
         const readPakageJson = await workspace.fs.readFile(Uri.file(packageJsonPath));
         const jsonOutput = JSON.parse(readPakageJson.toString());
         window.showQuickPick(Object.keys(jsonOutput.scripts)).then(async response => {
